@@ -2,11 +2,12 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Buscar en Menús</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda</title>
 </head>
 <body>
-    <h1>Buscar Menú por Palabra Clave</h1>
-
+    <h1>Búsqueda</h1>
+    
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
@@ -16,14 +17,14 @@
     {% if resultados %}
         <h2>Resultados:</h2>
         <ul>
-            {% for archivo in resultados %}
-                <li>{{ archivo }}</li>
+            {% for resultado in resultados %}
+                <li>{{ resultado }}</li>
             {% endfor %}
         </ul>
     {% else %}
-        {% if request.method == 'POST' %}
-            <p>No se encontraron resultados.</p>
-        {% endif %}
+        <p>No se encontraron resultados.</p>
     {% endif %}
+    
+    <a href="{% url 'home' %}">Volver al inicio</a>
 </body>
 </html>
