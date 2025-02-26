@@ -13,26 +13,23 @@ def formatear_nombre_archivo(nombre_archivo):
     Ejemplo: 'menu-Margarito_Ponzano-Bar.pdf.txt' -> 'Menú: Bar Margarito Ponzano'
     """
     # Quitar la extensión
-    nombre_archivo = nombre_archivo.replace(".pdf.txt", "")
+    nombre_sin_extension = nombre_archivo.replace('.pdf.txt', '')
 
     # Separar partes por el guion
-    partes = nombre_archivo.split('-')
+    partes = nombre_sin_extension.split('-')
 
     if len(partes) < 2:
-        return nombre_archivo  # Devolver sin cambios si el formato no es válido
+        return nombre_archivo  # Si no sigue el formato esperado, devolver tal cual
     
-    tipo_menu = partes[0]  # 'menu', 'carta', etc.
-    nombre_lugar = partes[1:-1]  # El nombre del sitio
-    tipo_lugar = partes[-1]  # 'Restaurante', 'Bar', etc.
+    tipo_menu = partes[0].replace('_', ' ').capitalize()  # "menu_del_dia" -> "Menu del dia"
+    nombre_lugar = ' '.join(partes[1:-1]).replace('_', ' ')  # Unir todas las partes intermedias
+    tipo_lugar = partes[-1].replace('_', ' ')  # Tipo de lugar
 
-    # Reemplazar guiones bajos por espacios en el nombre del lugar
-    nombre_lugar = " ".join(nombre_lugar).replace("_", " ")
+    # Formatear el nombre
+    nombre_formateado = f"{tipo_menu}: {tipo_lugar} {nombre_lugar}".replace("_", " ")
 
-    # Convertir el tipo de menú a un formato más bonito
-    tipo_menu = tipo_menu.capitalize().replace("_", " ")  # 'menu_del_dia' -> 'Menu del dia'
-
-    # Formatear el resultado
-    return f"{tipo_menu}: {tipo_lugar} {nombre_lugar}"
+    # Devolver el nombre formateado
+    return nombre_formateado
 
 def buscar(request):
     resultados = []
