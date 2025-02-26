@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar en Menús</title>
+</head>
+<body>
+    <h1>Buscar Menú por Palabra Clave</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Buscar</button>
+    </form>
+
+    {% if resultados %}
+        <h2>Resultados:</h2>
+        <ul>
+            {% for archivo in resultados %}
+                <li>{{ archivo }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        {% if request.method == 'POST' %}
+            <p>No se encontraron resultados.</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
