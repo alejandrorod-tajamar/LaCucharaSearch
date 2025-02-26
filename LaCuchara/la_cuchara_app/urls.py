@@ -1,10 +1,7 @@
-# la_cuchara_app/urls.py
 from django.urls import path
-
-from . import views
-from .views import buscar
+from .views import home, buscar
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('buscar/', buscar, name='buscar'),
+    path('', home, name='home'),  # Página principal
+    path('buscar/', buscar, name='buscar'),  # Página de búsqueda
 ]
