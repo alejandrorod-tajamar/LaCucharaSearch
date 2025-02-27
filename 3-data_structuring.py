@@ -63,16 +63,18 @@ def estructurar_texto_con_openai(texto):
             {"role": "system", "content": """
             Tu tarea es extraer la información de un menú en un formato JSON. Por favor, solo devuelve el JSON, sin texto adicional ni explicaciones. El JSON debe ser válido y contener los siguientes campos:
             - restaurante: Nombre del restaurante (Lo pone en el nombre del archivo).
+            - tipologia: Tipo o estilo del restaurante (Meidterráneo, Tradicional, etc.).
+            - tipo_menu: Si tienen algún plato que sea alguna opción de las siguientes: (sin_restricciones, opciones_celiacos, opciones_vegetarianas, opciones_veganas, ...)
             - valoracion: Valoración del restaurante (1-5) (Invéntatela).
-            - reservas: Las reservas activas asociadas al restaurante.
+            - reservas: Las reservas activas asociadas al restaurante (un array vacío).
             - platos: Un array de objetos, donde cada objeto representa un plato y contiene:
-              - nombre: Nombre del plato.
-              - tipo: Tipo de plato (Entrante, Principal, Postre, etc.) (Si no es ninguno de esos tipos, poner 'Carta').
-              - valoracion: Valoración del plato (1-5) (Invéntatela).
-              - precio: Precio del plato como número (sin símbolo de moneda).
-              - moneda: Moneda en la que está expresado el precio (por ejemplo, "EUR").
-              - ingredientes: Array de ingredientes del plato.
-              - promocion: Las promociones activas asociadas al plato.
+                - nombre: Nombre del plato.
+                - tipo: Tipo de plato (Entrante, Principal, Postre o Carta [si no es ninguno de los anteriores]).
+                - valoracion: Valoración del plato (1-5) (Invéntatela).
+                - precio: Precio del plato como número (sin símbolo de moneda).
+                - moneda: Moneda en la que está expresado el precio (por ejemplo, "EUR").
+                - ingredientes: Array de ingredientes del plato.
+                - promocion: Las promociones activas asociadas al plato (un array vacío).
             """},
             {"role": "user", "content": texto}
         ]
