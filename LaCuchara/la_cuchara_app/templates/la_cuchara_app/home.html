@@ -7,7 +7,12 @@
 </head>
 <body>
     <h1>Bienvenido a La Cuchara</h1>
-    <p>Esta es la página principal.</p>
-    <a href="{% url 'buscar' %}">Ir a la búsqueda</a>
+    <p>Explora menús y restaurantes cercanos.</p>
+    
+    <h2>Acciones</h2>
+    <ul>
+        <li><a href="{% url 'restaurante_seleccionar' %}">Soy Restaurante</a></li>
+        <li><a href="{% url 'buscar' %}">Soy Cliente</a></li>
+    </ul>
 </body>
 </html>

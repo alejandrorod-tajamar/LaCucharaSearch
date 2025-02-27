@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Búsqueda</title>
+    <title>Búsqueda de Menús</title>
 </head>
 <body>
-    <h1>Búsqueda</h1>
-    
+    <h1>Búsqueda de Menús</h1>
+
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
@@ -24,7 +24,7 @@
     {% else %}
         <p>No se encontraron resultados.</p>
     {% endif %}
-    
+
     <a href="{% url 'home' %}">Volver al inicio</a>
 </body>
 </html>
