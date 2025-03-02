@@ -1,19 +1,25 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservar</title>
-</head>
-<body>
-    <h1>Reservar una Mesa</h1>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Reservar</button>
-    </form>
-
-    <a href="{% url 'buscar' %}">Volver</a>
-</body>
-</html>
+<form method="post">
+    {% csrf_token %}
+    <h1>Reservar en {{ restaurante.restaurante }}</h1>
+    
+    <div class="form-group">
+        <label>Nombre completo:
+            <input type="text" name="nombre_cliente" required>
+        </label>
+    </div>
+    
+    <div class="form-group">
+        <label>Fecha:
+            <input type="date" name="fecha" required>
+        </label>
+    </div>
+    
+    <div class="form-group">
+        <label>Hora:
+            <input type="time" name="hora" required>
+        </label>
+    </div>
+    
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <button type="submit">Reservar</button>
+</form>

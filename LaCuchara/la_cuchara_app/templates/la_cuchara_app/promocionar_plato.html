@@ -1,19 +1,18 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promocionar Plato</title>
-</head>
-<body>
-    <h1>Promocionar un Plato</h1>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Promocionar</button>
-    </form>
-
-    <a href="{% url 'restaurante_seleccionar' %}">Volver</a>
-</body>
-</html>
+<form method="post">
+    {% csrf_token %}
+    <h2>Promocionar Plato en {{ restaurante.restaurante }}</h2>
+    
+    <label>Seleccionar plato:
+        <select name="nombre_plato" required>
+            {% for plato in restaurante.platos %}
+                <option value="{{ plato.nombre }}">{{ plato.nombre }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    
+    <label>Importe a invertir (€):
+        <input type="number" name="importe" step="0.01" min="0" required>
+    </label>
+    
+    <button type="submit">Activar Promoción</button>
+</form>

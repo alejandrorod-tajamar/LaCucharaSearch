@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opciones del Restaurante</title>
+</head>
+<body>
+    <h1>Opciones para {{ restaurante.restaurante }}</h1>
+    <ul>
+        <li><a href="{% url 'promocionar_plato' restaurante_id=restaurante.id_str %}">Promocionar Plato</a></li>
+        <li><a href="{% url 'consultar_reservas' restaurante_id=restaurante.id_str %}">Ver Reservas</a></li>
+    </ul>
+    <a href="{% url 'restaurante_seleccionar' %}">Volver</a>
+</body>
+</html>

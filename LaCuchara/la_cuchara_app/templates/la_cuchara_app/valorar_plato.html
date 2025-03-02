@@ -1,19 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valorar un Plato</title>
-</head>
-<body>
-    <h1>Valorar un Plato</h1>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Enviar Valoración</button>
-    </form>
-
-    <a href="{% url 'buscar' %}">Volver</a>
-</body>
-</html>
+<form method="post">
+    {% csrf_token %}
+    <h3>Valorar este plato</h3>
+    <div class="rating">
+        {% for i in "54321" %}
+            <input type="radio" id="star{{i}}" name="puntuacion" value="{{i}}">
+            <label for="star{{i}}">{{i}}★</label>
+        {% endfor %}
+    </div>
+    <button type="submit">Enviar Valoración</button>
+</form>

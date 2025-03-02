@@ -6,14 +6,19 @@
     <title>Seleccionar Restaurante</title>
 </head>
 <body>
-    <h1>Selecciona o Registra tu Restaurante</h1>
-
+    <h1>Selecciona tu Restaurante</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <ul>
+            {% for restaurante in restaurantes %}
+            <li>
+                <input type="radio" name="restaurante_id" value="{{ restaurante.id_str }}">  <!-- Usar id_str -->
+                {{ restaurante.restaurante }} - {{ restaurante.direccion }}
+            </li>
+            {% endfor %}
+        </ul>
         <button type="submit">Continuar</button>
     </form>
-
     <a href="{% url 'home' %}">Volver al inicio</a>
 </body>
 </html>

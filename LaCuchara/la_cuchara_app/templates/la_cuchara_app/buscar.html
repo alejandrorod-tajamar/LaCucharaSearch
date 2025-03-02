@@ -2,29 +2,82 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Búsqueda de Menús</title>
+    <title>Búsqueda - La Cuchara</title>
+    <style>
+        .resultado {
+            margin: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        .plato {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9f9;
+        }
+        .promocionado {
+            border-left: 3px solid #e67e22;
+        }
+        .promo-tag {
+            color: #e67e22;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>Búsqueda de Menús</h1>
-
+    <h1>Búsqueda de Platos</h1>
+    
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Buscar</button>
+        <div class="filtros">
+            <!-- Campo de búsqueda principal -->
+            <input type="text" name="query" placeholder="Buscar platos..." value="{{ query }}">
+            
+            <!-- Filtro por tipo de menú -->
+            <select name="tipo_menu">
+                <option value="">Todos los tipos</option>
+                <option value="sin_restricciones" {% if tipo_menu_selected == "sin_restricciones" %}selected{% endif %}>
+                    Sin restricciones
+                </option>
+                <option value="opciones_celiacos" {% if tipo_menu_selected == "opciones_celiacos" %}selected{% endif %}>
+                    Celiacos
+                </option>
+                <option value="opciones_veganas" {% if tipo_menu_selected == "opciones_veganas" %}selected{% endif %}>
+                    Veganos
+                </option>
+            </select>
+            
+            <!-- Filtro por valoración mínima -->
+            <input type="number" name="valoracion_min" 
+                   min="0" max="5" step="0.1" 
+                   placeholder="Valoración mínima"
+                   value="{{ valoracion_min|default:'0' }}">
+            
+            <button type="submit">Buscar</button>
+        </div>
     </form>
 
     {% if resultados %}
-        <h2>Resultados:</h2>
-        <ul>
-            {% for resultado in resultados %}
-                <li>{{ resultado }}</li>
-            {% endfor %}
-        </ul>
+        {% for restaurante in resultados %}
+            <div class="resultado">
+                <h2>{{ restaurante.restaurante }}</h2>
+                <p>{{ restaurante.direccion }}</p>
+                
+                <div class="platos">
+                    {% for plato in restaurante.platos|dictsortreversed:"promocion_importe" %}
+                        <div class="plato {% if plato.promocion_importe %}promocionado{% endif %}">
+                            <h3>{{ plato.nombre }}</h3>
+                            {% if plato.promocion_importe %}
+                                <span class="promo-tag">🔥 Promoción: {{ plato.promocion_importe }}€</span>
+                            {% endif %}
+                            <p>Valoración: ⭐ {{ plato.valoracion|default:"Sin valoraciones" }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
     {% else %}
-        <p>No se encontraron resultados.</p>
+        <p>No se encontraron resultados para "{{ query }}"</p>
     {% endif %}
-
-    <a href="{% url 'home' %}">Volver al inicio</a>
 </body>
 </html>

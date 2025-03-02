@@ -57,8 +57,8 @@ ROOT_URLCONF = 'LaCuchara.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'LaCuchara/la_cuchara_app/templates')],
-        'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Agrega esta línea si tienes un directorio de plantillas global
+        'APP_DIRS': True,  # Asegúrate de que esto esté en True
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -129,3 +129,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Azure
 AZURE_STORAGE_CONNECTION_STRING="DefaultEndpointsProtocol=https;AccountName=stgacc1ard;AccountKey=wDzuakzKVICu6XErjSsegQhmbJjbDuFwIGHyd+Fa48c0PcAfZYMRZxq9K7ZvKYzMSpV2IEK1PnLy+AStLf0big==;EndpointSuffix=core.windows.net"
+AZURE_SEARCH_KEY="ntsWQATnSlCHAEbcqxmalg3t2TlNmiXsx1GN7FYiyVAzSeAYiFhy"
+AZURE_SEARCH_ENDPOINT="https://aisearch1ard.search.windows.net"
+AZURE_INDEX_NAME="restaurantes-2"
