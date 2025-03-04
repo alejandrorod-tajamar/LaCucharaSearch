@@ -4,7 +4,7 @@ Para probar este proyecto:
 
 1. Con una terminal de Git Bash, clona el repositorio:
 
-```git
+```
 git clone https://github.com/alejandrorod-tajamar/LaCucharaSearch.git
 ```
 
