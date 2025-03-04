@@ -2,12 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultar Reservas</title>
 </head>
 <body>
     <h1>Reservas Actuales</h1>
-
     {% if reservas %}
         <ul>
             {% for reserva in reservas %}
@@ -17,7 +15,6 @@
     {% else %}
         <p>No hay reservas en este momento.</p>
     {% endif %}
-
     <a href="{% url 'restaurante_seleccionar' %}">Volver</a>
 </body>
 </html>

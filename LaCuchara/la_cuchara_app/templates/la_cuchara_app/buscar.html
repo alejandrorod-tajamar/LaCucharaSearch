@@ -26,43 +26,27 @@
 </head>
 <body>
     <h1>Búsqueda de Platos</h1>
-    
     <form method="post">
         {% csrf_token %}
         <div class="filtros">
-            <!-- Campo de búsqueda principal -->
             <input type="text" name="query" placeholder="Buscar platos..." value="{{ query }}">
-            
-            <!-- Filtro por tipo de menú -->
             <select name="tipo_menu">
                 <option value="">Todos los tipos</option>
-                <option value="sin_restricciones" {% if tipo_menu_selected == "sin_restricciones" %}selected{% endif %}>
-                    Sin restricciones
-                </option>
-                <option value="opciones_celiacos" {% if tipo_menu_selected == "opciones_celiacos" %}selected{% endif %}>
-                    Celiacos
-                </option>
-                <option value="opciones_veganas" {% if tipo_menu_selected == "opciones_veganas" %}selected{% endif %}>
-                    Veganos
-                </option>
+                <option value="sin_restricciones" {% if tipo_menu_selected == "sin_restricciones" %}selected{% endif %}>Sin restricciones</option>
+                <option value="opciones_celiacos" {% if tipo_menu_selected == "opciones_celiacos" %}selected{% endif %}>Celiacos</option>
+                <option value="opciones_veganas" {% if tipo_menu_selected == "opciones_veganas" %}selected{% endif %}>Veganos</option>
             </select>
-            
-            <!-- Filtro por valoración mínima -->
-            <input type="number" name="valoracion_min" 
-                   min="0" max="5" step="0.1" 
-                   placeholder="Valoración mínima"
-                   value="{{ valoracion_min|default:'0' }}">
-            
+            <input type="number" name="valoracion_min" min="0" max="5" step="1" placeholder="Valoración mínima" value="{{ valoracion_min|default:'0' }}">
             <button type="submit">Buscar</button>
         </div>
     </form>
-
     {% if resultados %}
         {% for restaurante in resultados %}
             <div class="resultado">
                 <h2>{{ restaurante.restaurante }}</h2>
                 <p>{{ restaurante.direccion }}</p>
-                
+                <!-- Enlace para reservar en el restaurante -->
+                <a href="{% url 'reservar' restaurante_id=restaurante.id %}">Reservar</a>
                 <div class="platos">
                     {% for plato in restaurante.platos|dictsortreversed:"promocion_importe" %}
                         <div class="plato {% if plato.promocion_importe %}promocionado{% endif %}">
@@ -71,6 +55,7 @@
                                 <span class="promo-tag">🔥 Promoción: {{ plato.promocion_importe }}€</span>
                             {% endif %}
                             <p>Valoración: ⭐ {{ plato.valoracion|default:"Sin valoraciones" }}</p>
+                            <a href="{% url 'valorar_plato' restaurante_id=restaurante.id plato_nombre=plato.nombre %}">Valorar</a>
                         </div>
                     {% endfor %}
                 </div>
@@ -79,5 +64,6 @@
     {% else %}
         <p>No se encontraron resultados para "{{ query }}"</p>
     {% endif %}
+    <a href="{% url 'home' %}">Volver al inicio</a>
 </body>
 </html>

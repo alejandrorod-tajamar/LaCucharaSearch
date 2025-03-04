@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seleccionar Restaurante</title>
 </head>
 <body>
@@ -11,10 +10,10 @@
         {% csrf_token %}
         <ul>
             {% for restaurante in restaurantes %}
-            <li>
-                <input type="radio" name="restaurante_id" value="{{ restaurante.id_str }}">  <!-- Usar id_str -->
-                {{ restaurante.restaurante }} - {{ restaurante.direccion }}
-            </li>
+                <li>
+                    <input type="radio" name="restaurante_id" value="{{ restaurante.id_str }}">
+                    {{ restaurante.restaurante }} - {{ restaurante.direccion }}
+                </li>
             {% endfor %}
         </ul>
         <button type="submit">Continuar</button>

@@ -1,7 +1,10 @@
 from django.db import models
 
 class Valoracion(models.Model):
-    plato_id = models.CharField(max_length=100)  # ID del plato en MongoDB
+    plato_id = models.CharField(max_length=100)
     usuario = models.CharField(max_length=100)
-    puntuacion = models.IntegerField(choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')])
+    puntuacion = models.IntegerField()
     fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.plato_id} - {self.usuario}: {self.puntuacion}"
