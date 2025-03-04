@@ -1,23 +1,76 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Seleccionar Restaurante</title>
+  <meta charset="UTF-8">
+  <title>Seleccionar Restaurante</title>
+  <style>
+    body {
+      background: #f4f4f4;
+      font-family: Arial, sans-serif;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    form ul {
+      list-style: none;
+      padding: 0;
+    }
+    form ul li {
+      background: #f9f9f9;
+      margin-bottom: 8px;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    form button {
+      background: #3498db;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    form button:hover {
+      background: #2980b9;
+    }
+    a {
+      display: inline-block;
+      margin-top: 15px;
+      color: #3498db;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
     <h1>Selecciona tu Restaurante</h1>
     <form method="post">
-        {% csrf_token %}
-        <ul>
-            {% for restaurante in restaurantes %}
-                <li>
-                    <input type="radio" name="restaurante_id" value="{{ restaurante.id_str }}">
-                    {{ restaurante.restaurante }} - {{ restaurante.direccion }}
-                </li>
-            {% endfor %}
-        </ul>
-        <button type="submit">Continuar</button>
+      {% csrf_token %}
+      <ul>
+        {% for restaurante in restaurantes %}
+          <li>
+            <input type="radio" name="restaurante_id" value="{{ restaurante.id_str }}" required>
+            {{ restaurante.restaurante }} - {{ restaurante.direccion }}
+          </li>
+        {% endfor %}
+      </ul>
+      <button type="submit">Continuar</button>
     </form>
     <a href="{% url 'home' %}">Volver al inicio</a>
+  </div>
 </body>
 </html>
