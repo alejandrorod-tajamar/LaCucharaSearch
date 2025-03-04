@@ -1,59 +1,28 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Consultar Reservas</title>
-  <style>
-    body {
-      background: #f4f4f4;
-      font-family: Arial, sans-serif;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 800px;
-      margin: 30px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1 {
-      color: #333;
-    }
-    a {
-      color: #3498db;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    ul li {
-      background: #f9f9f9;
-      margin-bottom: 8px;
-      padding: 10px;
-      border-radius: 4px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Reservas Actuales</h1>
-    {% if reservas %}
-      <ul>
-        {% for reserva in reservas %}
-          <li>{{ reserva.nombre_cliente }} - {{ reserva.fecha }} a las {{ reserva.hora }}</li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No hay reservas en este momento.</p>
-    {% endif %}
-    <a href="{% url 'restaurante_seleccionar' %}">Volver</a>
-  </div>
-</body>
-</html>
+{% extends "la_cuchara_app/base.html" %}
+
+{% block title %}Reservas - La Cuchara{% endblock %}
+{% block header %}Reservas Actuales{% endblock %}
+
+{% block nav %}
+    {{ block.super }}
+    <!-- Corregir el restaurante_id usando el objeto restaurante pasado desde la vista -->
+    <a href="{% url 'opciones_restaurante' restaurante_id=restaurante.id_str %}" class="nav-link">Volver</a>
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        {% if reservas %}
+            <div class="grid">
+                {% for reserva in reservas %}
+                    <div class="card">
+                        <h3>{{ reserva.nombre_cliente }}</h3>
+                        <p>📅 {{ reserva.fecha }}</p>
+                        <p>🕒 {{ reserva.hora }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">No hay reservas registradas</p>
+        {% endif %}
+    </div>
+{% endblock %}

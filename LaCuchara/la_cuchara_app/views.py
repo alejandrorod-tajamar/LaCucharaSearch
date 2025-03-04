@@ -173,8 +173,9 @@ def promocionar_plato(request, restaurante_id):
     
 def consultar_reservas(request, restaurante_id):
     restaurante = restaurantes.find_one({'_id': ObjectId(restaurante_id)})
+    restaurante['id_str'] = str(restaurante['_id'])  # ← Añadir esta línea
     reservas = restaurante.get('reservas', [])
     return render(request, 'la_cuchara_app/consultar_reservas.html', {
         'reservas': reservas,
-        'restaurante': restaurante
+        'restaurante': restaurante  # ← Asegurar que se pasa el restaurante con id_str
     })

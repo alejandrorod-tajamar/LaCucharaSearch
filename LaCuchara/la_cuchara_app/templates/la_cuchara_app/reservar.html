@@ -1,86 +1,35 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Reservar - La Cuchara</title>
-  <style>
-    body {
-      background: #f4f4f4;
-      font-family: Arial, sans-serif;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 600px;
-      margin: 30px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1 {
-      color: #333;
-    }
-    form label {
-      display: block;
-      margin-bottom: 10px;
-    }
-    form input[type="text"],
-    form input[type="date"],
-    form input[type="time"] {
-      padding: 8px;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin-top: 4px;
-    }
-    form button {
-      background: #3498db;
-      color: #fff;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    form button:hover {
-      background: #2980b9;
-    }
-    a {
-      display: inline-block;
-      margin-top: 15px;
-      color: #3498db;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .error {
-      color: red;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Reservar en {{ restaurante.restaurante }}</h1>
-    <form method="post">
-      {% csrf_token %}
-      <label>Nombre completo:
-        <input type="text" name="nombre_cliente" required>
-      </label>
-      <label>Fecha:
-        <input type="date" name="fecha" required>
-      </label>
-      <label>Hora:
-        <input type="time" name="hora" required>
-      </label>
-      {% if error %}
-        <p class="error">{{ error }}</p>
-      {% endif %}
-      <button type="submit">Reservar</button>
-    </form>
-    <a href="{% url 'home' %}">Volver al inicio</a>
-  </div>
-</body>
-</html>
+<!-- reservar.html -->
+{% extends "la_cuchara_app/base.html" %}
+
+{% block title %}Reservar - La Cuchara{% endblock %}
+{% block header %}Reserva en {{ restaurante.restaurante }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Nombre completo:</label>
+                <input type="text" name="nombre_cliente" required>
+            </div>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label>Fecha:</label>
+                    <input type="date" name="fecha" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Hora:</label>
+                    <input type="time" name="hora" required>
+                </div>
+            </div>
+            
+            {% if error %}
+                <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+            
+            <button type="submit" class="button">Confirmar Reserva</button>
+        </form>
+    </div>
+{% endblock %}

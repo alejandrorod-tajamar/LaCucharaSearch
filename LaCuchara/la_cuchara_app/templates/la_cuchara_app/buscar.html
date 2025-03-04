@@ -1,117 +1,70 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Búsqueda - La Cuchara</title>
-  <style>
-    body {
-      background: #f4f4f4;
-      font-family: Arial, sans-serif;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 800px;
-      margin: 30px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1, h2, h3 {
-      color: #333;
-    }
-    a {
-      color: #3498db;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .filtros input[type="text"],
-    .filtros input[type="number"],
-    .filtros select {
-      padding: 8px;
-      width: calc(100% - 16px);
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .filtros button {
-      background: #3498db;
-      color: #fff;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .filtros button:hover {
-      background: #2980b9;
-    }
-    .resultado {
-      margin: 20px 0;
-      padding: 15px;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      background: #fafafa;
-    }
-    .plato {
-      margin: 10px 0;
-      padding: 10px;
-      background: #f9f9f9;
-      border-radius: 4px;
-    }
-    .promocionado {
-      border-left: 3px solid #e67e22;
-    }
-    .promo-tag {
-      color: #e67e22;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Búsqueda de Platos</h1>
+<!-- buscar.html -->
+{% extends "la_cuchara_app/base.html" %}
+
+{% block title %}Búsqueda - La Cuchara{% endblock %}
+{% block header %}Búsqueda de Platos{% endblock %}
+
+{% block nav %}
+    {{ block.super }}
+    <a href="{% url 'restaurante_seleccionar' %}" class="nav-link">Restaurantes</a>
+{% endblock %}
+
+{% block content %}
     <form method="post">
-      {% csrf_token %}
-      <div class="filtros">
-        <input type="text" name="query" placeholder="Buscar platos..." value="{{ query }}">
-        <select name="tipo_menu">
-          <option value="">Todos los tipos</option>
-          <option value="sin_restricciones" {% if tipo_menu_selected == "sin_restricciones" %}selected{% endif %}>Sin restricciones</option>
-          <option value="opciones_celiacos" {% if tipo_menu_selected == "opciones_celiacos" %}selected{% endif %}>Celiacos</option>
-          <option value="opciones_veganas" {% if tipo_menu_selected == "opciones_veganas" %}selected{% endif %}>Veganos</option>
-        </select>
-        <input type="number" name="valoracion_min" min="0" max="5" step="1" placeholder="Valoración mínima" value="{{ valoracion_min|default:'0' }}">
-        <button type="submit">Buscar</button>
-      </div>
-    </form>
-    {% if resultados %}
-      {% for restaurante in resultados %}
-        <div class="resultado">
-          <h2>{{ restaurante.restaurante }}</h2>
-          <p>{{ restaurante.direccion }}</p>
-          <a href="{% url 'reservar' restaurante_id=restaurante.id %}">Reservar</a>
-          <div class="platos">
-            {% for plato in restaurante.platos|dictsortreversed:"promocion_importe" %}
-              <div class="plato {% if plato.promocion_importe %}promocionado{% endif %}">
-                <h3>{{ plato.nombre }}</h3>
-                {% if plato.promocion_importe %}
-                  <span class="promo-tag">🔥 Promoción: {{ plato.promocion_importe }}€</span>
-                {% endif %}
-                <p>Valoración: ⭐ {{ plato.valoracion|default:"Sin valoraciones" }}</p>
-                <a href="{% url 'valorar_plato' restaurante_id=restaurante.id plato_nombre=plato.nombre %}">Valorar</a>
-              </div>
-            {% endfor %}
-          </div>
+        {% csrf_token %}
+        <div class="card">
+            <div class="grid">
+                <div class="form-group">
+                    <input type="text" name="query" placeholder="🔍 Buscar platos..." value="{{ query }}">
+                </div>
+                
+                <div class="form-group">
+                    <select name="tipo_menu">
+                        <option value="">Todos los tipos</option>
+                        <option value="sin_restricciones" {% if tipo_menu_selected == "sin_restricciones" %}selected{% endif %}>Sin restricciones</option>
+                        <option value="opciones_celiacos" {% if tipo_menu_selected == "opciones_celiacos" %}selected{% endif %}>Celiacos</option>
+                        <option value="opciones_veganas" {% if tipo_menu_selected == "opciones_veganas" %}selected{% endif %}>Veganos</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <input type="number" name="valoracion_min" min="0" max="5" step="1" 
+                           placeholder="⭐ Valoración mínima" value="{{ valoracion_min|default:'0' }}">
+                </div>
+            </div>
+            <button type="submit" class="button">Buscar</button>
         </div>
-      {% endfor %}
+    </form>
+
+    {% if resultados %}
+        <div class="grid">
+            {% for restaurante in resultados %}
+                <div class="card">
+                    <h2>{{ restaurante.restaurante }}</h2>
+                    <p>{{ restaurante.direccion }}</p>
+                    <a href="{% url 'reservar' restaurante_id=restaurante.id %}" class="button">Reservar Mesa</a>
+                    
+                    <div class="grid" style="margin-top: 1.5rem;">
+                        {% for plato in restaurante.platos|dictsortreversed:"promocion_importe" %}
+                            <div class="card" style="{% if plato.promocion_importe %}border-left: 4px solid var(--warning);{% endif %}">
+                                <h3>{{ plato.nombre }}</h3>
+                                {% if plato.promocion_importe %}
+                                    <div class="promo-tag">
+                                        🔥 Promoción: {{ plato.promocion_importe }}€
+                                    </div>
+                                {% endif %}
+                                <p class="rating-stars">Valoración: {{ plato.valoracion|default:"Sin valoraciones" }}</p>
+                                <a href="{% url 'valorar_plato' restaurante_id=restaurante.id plato_nombre=plato.nombre %}" 
+                                   class="button">Valorar Plato</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% else %}
-      <p>No se encontraron resultados para "{{ query }}"</p>
+        <div class="card">
+            <p>No se encontraron resultados para "{{ query }}"</p>
+        </div>
     {% endif %}
-    <a href="{% url 'home' %}">Volver al inicio</a>
-  </div>
-</body>
-</html>
+{% endblock %}

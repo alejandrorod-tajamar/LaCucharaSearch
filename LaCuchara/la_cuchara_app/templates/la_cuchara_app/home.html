@@ -1,54 +1,22 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>La Cuchara - Inicio</title>
-  <style>
-    body {
-      background: #f4f4f4;
-      font-family: Arial, sans-serif;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 600px;
-      margin: 30px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    h1, h2 {
-      color: #333;
-    }
-    a {
-      color: #3498db;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    ul li {
-      margin: 10px 0;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Bienvenido a La Cuchara</h1>
-    <p>Explora menús y restaurantes cercanos.</p>
-    <h2>Acciones</h2>
-    <ul>
-      <li><a href="{% url 'restaurante_seleccionar' %}">Soy Restaurante</a></li>
-      <li><a href="{% url 'buscar' %}">Soy Cliente</a></li>
-    </ul>
-  </div>
-</body>
-</html>
+<!-- home.html -->
+{% extends "la_cuchara_app/base.html" %}
+
+{% block title %}La Cuchara - Inicio{% endblock %}
+{% block header %}Bienvenido a La Cuchara{% endblock %}
+
+{% block content %}
+    <div class="card text-center">
+        <h2>¿Qué deseas hacer?</h2>
+        <div class="grid" style="margin-top: 2rem;">
+            <a href="{% url 'restaurante_seleccionar' %}" class="card button">
+                <h3>🏨 Soy Restaurante</h3>
+                <p>Gestiona tu establecimiento</p>
+            </a>
+            
+            <a href="{% url 'buscar' %}" class="card button">
+                <h3>👤 Soy Cliente</h3>
+                <p>Encuentra tu próximo plato</p>
+            </a>
+        </div>
+    </div>
+{% endblock %}

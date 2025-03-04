@@ -1,52 +1,27 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Opciones del Restaurante</title>
-  <style>
-    body {
-      background: #f4f4f4;
-      font-family: Arial, sans-serif;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 600px;
-      margin: 30px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1 {
-      color: #333;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    ul li {
-      margin: 10px 0;
-    }
-    a {
-      color: #3498db;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Opciones para {{ restaurante.restaurante }}</h1>
-    <ul>
-      <li><a href="{% url 'promocionar_plato' restaurante_id=restaurante.id_str %}">Promocionar Plato</a></li>
-      <li><a href="{% url 'consultar_reservas' restaurante_id=restaurante.id_str %}">Ver Reservas</a></li>
-    </ul>
-    <a href="{% url 'restaurante_seleccionar' %}">Volver</a>
-  </div>
-</body>
-</html>
+<!-- opciones_restaurante.html -->
+{% extends "la_cuchara_app/base.html" %}
+
+{% block title %}Opciones - {{ restaurante.restaurante }}{% endblock %}
+{% block header %}{{ restaurante.restaurante }}{% endblock %}
+
+{% block nav %}
+    {{ block.super }}
+    <a href="{% url 'restaurante_seleccionar' %}" class="nav-link">Volver</a>
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h2 class="text-center">Opciones de Gestión</h2>
+        <div class="grid" style="margin-top: 2rem;">
+            <a href="{% url 'promocionar_plato' restaurante_id=restaurante.id_str %}" class="card">
+                <h3>📈 Promocionar Plato</h3>
+                <p>Aumenta la visibilidad de tus platos</p>
+            </a>
+            
+            <a href="{% url 'consultar_reservas' restaurante_id=restaurante.id_str %}" class="card">
+                <h3>📅 Ver Reservas</h3>
+                <p>Consulta las reservas activas</p>
+            </a>
+        </div>
+    </div>
+{% endblock %}
