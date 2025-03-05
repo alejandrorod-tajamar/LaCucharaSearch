@@ -24,9 +24,11 @@ def buscar(request):
     
     filtros = []
     if tipo_menu:
-        filtros.append(f"tipo_menu eq '{tipo_menu}'")
+        # Modificado para manejar arrays y strings en tipo_menu
+        filtros.append(f"tipo_menu/any(t: t eq '{tipo_menu}')")
     if valoracion_min > 0:
-        filtros.append(f"platos/any(p: p/valoracion ge {valoracion_min})")
+        # Filtro por valoración del restaurante (no del plato)
+        filtros.append(f"valoracion ge {valoracion_min}")
     
     resultados = []
     if request.method == 'POST':
@@ -42,19 +44,29 @@ def buscar(request):
             search_fields=["platos/nombre"],
             filter=" and ".join(filtros) if filtros else None,
             order_by=["max_promocion desc"],
-            select=["id", "restaurante", "direccion", "platos", "tipo_menu"]
+            select=["id", "restaurante", "direccion", "platos", "tipo_menu", "valoracion"]
         ))
     
-    # Filtrar localmente los platos que contienen la query en su nombre
+    # Filtrado local mejorado
     resultados_filtrados = []
     for restaurante in resultados:
-        platos_coincidentes = [
-            plato for plato in restaurante['platos']
-            if query.lower() in plato['nombre'].lower()
+        # Mantener solo platos que coinciden con la query
+        restaurante['platos'] = [
+            p for p in restaurante.get('platos', [])
+            if query.lower() in p['nombre'].lower()
         ]
-        if platos_coincidentes:
-            restaurante['platos'] = platos_coincidentes
+        
+        # Calcular valoración máxima de platos para ordenación
+        if restaurante['platos']:
+            max_promocion = max(
+                (p.get('promocion_importe', 0) for p in restaurante['platos']),
+                default=0
+            )
+            restaurante['max_promocion'] = max_promocion
             resultados_filtrados.append(restaurante)
+    
+    # Ordenar por promoción (ya lo hace Azure, pero reforzamos)
+    resultados_filtrados.sort(key=lambda x: x.get('max_promocion', 0), reverse=True)
     
     return render(request, 'la_cuchara_app/buscar.html', {
         'resultados': resultados_filtrados,
@@ -103,23 +115,36 @@ def valorar_plato(request, restaurante_id, plato_nombre):
     if request.method == 'POST':
         try:
             new_rating = int(request.POST.get('puntuacion'))
-            # Insertar la nueva valoración en el array "valoraciones" del plato.
+            # Actualizar valoración del plato
             restaurantes.update_one(
                 {'_id': ObjectId(restaurante_id), 'platos.nombre': plato_nombre},
                 {'$push': {'platos.$.valoraciones': new_rating}}
             )
-            # Recuperar el restaurante para recalcular el promedio del plato.
+            
+            # Recalcular promedio del plato
             restaurante = restaurantes.find_one({'_id': ObjectId(restaurante_id)})
+            nuevos_promedios = []
+            
             for plato in restaurante.get('platos', []):
-                if plato.get('nombre') == plato_nombre:
+                if plato['nombre'] == plato_nombre:
                     ratings = plato.get('valoraciones', [])
                     if ratings:
-                        avg = sum(ratings) / len(ratings)
-                        # Actualizar el campo "valoracion" del plato.
+                        avg_plato = sum(ratings) / len(ratings)
+                        nuevos_promedios.append(avg_plato)
+                        # Actualizar plato
                         restaurantes.update_one(
                             {'_id': ObjectId(restaurante_id), 'platos.nombre': plato_nombre},
-                            {'$set': {'platos.$.valoracion': round(avg, 1)}}
+                            {'$set': {'platos.$.valoracion': round(avg_plato, 1)}}
                         )
+            
+            # Recalcular valoración total del restaurante
+            if nuevos_promedios:
+                avg_restaurante = sum(nuevos_promedios) / len(nuevos_promedios)
+                restaurantes.update_one(
+                    {'_id': ObjectId(restaurante_id)},
+                    {'$set': {'valoracion': round(avg_restaurante, 1)}}
+                )
+            
             return redirect('buscar')
         except Exception as e:
             print(f"Error al valorar: {e}")
