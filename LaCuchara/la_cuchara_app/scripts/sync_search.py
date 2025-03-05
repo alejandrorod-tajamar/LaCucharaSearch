@@ -15,7 +15,9 @@ django.setup()
 
 def clean_string(text):
     """Limpia caracteres no válidos para Azure"""
-    return text.encode('utf-8', 'ignore').decode('utf-8') if isinstance(text, str) else text
+    if isinstance(text, (list, dict)):
+        return text
+    return text.encode('utf-8', 'ignore').decode('utf-8') if isinstance(text, str) else str(text)
 
 def sync_data():
     # Conexión a MongoDB
@@ -37,43 +39,39 @@ def sync_data():
             max_promo = 0
             platos_procesados = []
             
+            # Procesar platos y promociones
             for plato in restaurante.get('platos', []):
-                # Procesar promoción
                 promociones = plato.get('promocion', [{}])
-                promo_importe = promociones[0].get('importe', 0) if promociones else 0
+                promo_importe = max((p.get('importe', 0) for p in promociones), default=0)
                 
-                # Actualizar máximo
                 if promo_importe > max_promo:
                     max_promo = promo_importe
                 
                 platos_procesados.append({
                     'nombre': clean_string(plato.get('nombre', '')),
                     'promocion_importe': promo_importe,
-                    'valoracion': plato.get('valoracion', 0)
+                    'valoracion': float(plato.get('valoracion', 0))
                 })
             
-            # Validar y asignar valor predeterminado para tipo_menu
-            tipo_menu = restaurante.get('tipo_menu', '')
+            # Procesar tipo_menu como array
+            tipo_menu = restaurante.get('tipo_menu', 'sin_restricciones')
+            if isinstance(tipo_menu, str):
+                tipo_menu = [tipo_menu.strip()] if tipo_menu.strip() else ['sin_restricciones']
+            elif isinstance(tipo_menu, list):
+                tipo_menu = [clean_string(tm).strip() for tm in tipo_menu if tm.strip()]
+            else:
+                tipo_menu = ['sin_restricciones']
             
-            # Si tipo_menu es una lista, convertirla a cadena
-            if isinstance(tipo_menu, list):
-                tipo_menu = ', '.join(tipo_menu)  # Unir elementos de la lista con comas
-            elif not isinstance(tipo_menu, str):  # Si no es una cadena ni una lista
-                tipo_menu = str(tipo_menu)  # Convertir a cadena
-            
-            # Eliminar espacios en blanco al principio y al final
-            tipo_menu = tipo_menu.strip()
-            
-            # Si está vacío, asignar valor predeterminado
-            if not tipo_menu:
-                tipo_menu = 'sin_restricciones'
+            # Valoración del restaurante
+            valoracion_rest = float(restaurante.get('valoracion', 0))
             
             # Construir documento para Azure
             doc = {
                 'id': str(restaurante['_id']),
                 'restaurante': clean_string(restaurante.get('restaurante', '')),
                 'direccion': clean_string(restaurante.get('direccion', '')),
-                'tipo_menu': clean_string(tipo_menu),  # Usar el valor validado
+                'tipo_menu': tipo_menu,
+                'valoracion': valoracion_rest,
                 'max_promocion': max_promo,
                 'platos': platos_procesados
             }
@@ -81,14 +79,16 @@ def sync_data():
             
         except Exception as e:
             print(f"Error procesando {restaurante.get('restaurante', '')}: {str(e)}")
+            continue
     
     # Subir a Azure
     if documentos:
         try:
-            client_azure.upload_documents(documents=documentos)
-            print(f"✅ {len(documentos)} restaurantes sincronizados")
+            result = client_azure.upload_documents(documents=documentos)
+            print(f"✅ Sincronizados {len(documentos)} restaurantes")
+            print(f"Resultado Azure: {result[0].succeeded}")
         except Exception as e:
-            print(f"Error al subir documentos a Azure: {str(e)}")
+            print(f"🚨 Error al subir documentos: {str(e)}")
     else:
         print("⚠️ No hay datos para sincronizar")
 

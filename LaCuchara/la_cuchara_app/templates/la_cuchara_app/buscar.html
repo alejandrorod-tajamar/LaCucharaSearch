@@ -50,10 +50,14 @@
                                 <h3>{{ plato.nombre }}</h3>
                                 {% if plato.promocion_importe %}
                                     <div class="promo-tag">
-                                        🔥 Promoción: {{ plato.promocion_importe }}€
+                                        🔥 Promocionado
                                     </div>
                                 {% endif %}
-                                <p class="rating-stars">Valoración: {{ plato.valoracion|default:"Sin valoraciones" }}</p>
+                                {% if plato.valoracion %}
+                                    <p class="rating-stars">Valoración: {{ plato.valoracion }}/5</p>
+                                {% else %}
+                                    <p class="rating-stars">Sin valoraciones</p>
+                                {% endif %}                                                    
                                 <a href="{% url 'valorar_plato' restaurante_id=restaurante.id plato_nombre=plato.nombre %}" 
                                    class="button">Valorar Plato</a>
                             </div>
